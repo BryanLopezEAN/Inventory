@@ -5,12 +5,21 @@
  */
 package store;
 
+import db.ConnectionDB;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Lopez Avila
  */
 public class Interfaz extends javax.swing.JFrame {
-
+    ConnectionDB con = new ConnectionDB();
+    Connection cn = (Connection) con.con();
     /**
      * Creates new form Interfaz
      */
@@ -61,6 +70,11 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel6.setText("%");
 
         btnRegister.setText("Guardar");
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -169,6 +183,31 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+        try {
+            PreparedStatement ps = cn.prepareStatement("INSERT INTO products(name, quantity, purchase_price, sale_price, iva) VALUES(?,?,?,?,?)");
+            ps.setString(1, this.txtName.getText());
+            ps.setInt(2, Integer.parseInt(this.txtQuantity.getText()));
+            ps.setInt(3, Integer.parseInt(this.txtPurchase.getText()));
+            ps.setInt(4, Integer.parseInt(this.txtSale.getText()));
+            ps.setInt(5, Integer.parseInt(this.txtIVA.getText()));
+            
+            ps.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "El Producto fue guardado.");
+            this.clear();
+        } catch (SQLException ex) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRegisterActionPerformed
+
+    private void clear(){
+        this.txtName.setText("");
+        this.txtQuantity.setText("");
+        this.txtPurchase.setText("");
+        this.txtSale.setText("");
+        this.txtIVA.setText("");
+    }
     /**
      * @param args the command line arguments
      */
